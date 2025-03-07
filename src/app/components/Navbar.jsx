@@ -1,5 +1,8 @@
 import Link from "next/link";
 import React from "react";
+import { FaBrain } from "react-icons/fa";
+import Image from "next/image";
+import user from "../../../public/user.jpg";
 
 export default function NavBar() {
   const navRoutes = (
@@ -20,7 +23,7 @@ export default function NavBar() {
   );
 
   return (
-    <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50">
+    <div className="navbar bg-[#0f0f0f] shadow-xl fixed top-0 left-0 right-0 z-50 sm:px-10">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -47,12 +50,15 @@ export default function NavBar() {
             {navRoutes}
           </ul>
         </div>
-        <Link href="/" className="btn btn-ghost text-xl">IntelliChat</Link>
+        <Link href="/" className="flex justify-center items-center gap-2">
+          <FaBrain className="text-violet-600 text-xl"></FaBrain>
+          <span className="bg-clip-text text-transparent font-bold text-2xl bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%">
+            IntelliChat
+          </span>
+        </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          {navRoutes}
-        </ul>
+        <ul className="menu menu-horizontal px-1">{navRoutes}</ul>
       </div>
       <div className="navbar-end">
         <div className="dropdown dropdown-end">
@@ -62,18 +68,19 @@ export default function NavBar() {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full">
-              <img
-                alt="User image"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+              <Image src={user} alt="user-image"></Image>
             </div>
           </div>
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
-            <li><a>Profile</a></li>
-            <li><a>Settings</a></li>
+            <li>
+              <a>Profile</a>
+            </li>
+            <li>
+              <a>Settings</a>
+            </li>
           </ul>
         </div>
       </div>

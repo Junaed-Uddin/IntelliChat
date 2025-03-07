@@ -19,7 +19,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto min-h-screen">
+    <div className="p-4 max-w-2xl mx-auto min-h-screen pt-20">
       <h1 className="text-2xl mb-6 text-center">Chat History</h1>
 
       {chatHistory.length === 0 ? (

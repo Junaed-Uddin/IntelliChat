@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosSend } from "react-icons/io";
 import { ImSpinner9 } from "react-icons/im";
+import { FaMicrophone } from "react-icons/fa";
 
 export default function Home() {
   const [inputText, setInputText] = useState("");
@@ -98,9 +99,9 @@ export default function Home() {
         >
           Hi, echoGPT
         </p>
-        <div className="flex relative justify-end items-center">
+        <div className="flex relative justify-end items-center pt-6">
           {/* Input Area */}
-          <div className="grow justify-end h-full w-full max-w-5xl mx-auto border rounded-xl bg-[#1E1E1E] text-white px-3 pt-3 shadow-md">
+          <div className="grow justify-end h-full w-full max-w-5xl mx-auto border border-gray-700 rounded-xl bg-[#1E1E1E] text-white px-3 pt-3 shadow-md">
             <div className="p-3 rounded-lg bg-[#1E1E1E] border border-gray-700">
               <textarea
                 placeholder="Type your Question"
@@ -115,6 +116,7 @@ export default function Home() {
             {/* Buttons */}
             <div className="flex justify-center gap-2 mt-3 p-2 border-t border-gray-700">
               <button className="btn btn-accent my-1" disabled={isLoading}>
+                <FaMicrophone></FaMicrophone>
                 Speak
               </button>
               <button
