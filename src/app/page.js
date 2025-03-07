@@ -1,101 +1,142 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { IoIosSend } from "react-icons/io";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [inputText, setInputText] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const savedMessages = localStorage.getItem("chat-history");
+    if (savedMessages) {
+      try {
+        setMessages(JSON.parse(savedMessages));
+      } catch (error) {
+        console.error("Error loading chat history:", error);
+      }
+    }
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("chat-history", JSON.stringify(messages));
+    }
+  }, [messages, mounted]);
+
+  const handleSend = async () => {
+    if (!inputText.trim()) return;
+
+    try {
+      setIsLoading(true);
+      const userMessage = { role: "user", content: inputText };
+
+      // Add user message to chat
+      setMessages((prev) => [...prev, userMessage]);
+
+      const response = await fetch(
+        "https://api.echogpt.live/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_ECHOGPT_API_KEY || "",
+          },
+          body: JSON.stringify({
+            messages: [
+              userMessage,
+            ],
+            model: "EchoGPT",
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      if (data.choices?.[0]?.message) {
+        setMessages((prev) => [...prev, data.choices[0].message]);
+      }
+      setInputText("");
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div className="relative min-h-screen">
+      <div className="px-5 flex flex-col min-h-[585px] justify-between pb-40">
+        <div className="flex-1 overflow-y-auto">
+          <div className="py-4 rounded-2xl w-full max-w-5xl mx-auto mb-4 space-y-4">
+            {messages.map((message, idx) => (
+              <div
+                key={idx}
+                className={`p-3 rounded-lg ${message.role === "user"
+                  ? "bg-gray-700 ml-auto w-1/2"
+                  : "mr-auto max-w-full text-left"
+                  }`}
+              >
+                {message.content}
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full px-5 bg-[#0A0A0A]">
+        <p
+          className={`text-center text-2xl m-5 ${messages.length ? "hidden" : ""
+            }`}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Hi, echoGPT
+        </p>
+        <div className="flex relative justify-end items-center">
+          {/* Input Area */}
+          <div className="grow justify-end h-full w-full max-w-5xl mx-auto border rounded-xl bg-[#1E1E1E] text-white px-3 pt-3 shadow-md">
+            <div className="p-3 rounded-lg bg-[#1E1E1E] border border-gray-700">
+              <textarea
+                placeholder="Type your Question"
+                className="w-full text-white outline-none resize-none bg-transparent"
+                rows={3}
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-center gap-2 mt-3 p-2 border-t border-gray-700">
+              <button className="btn btn-accent my-1" disabled={isLoading}>
+                Speak
+              </button>
+              <button
+                type="button"
+                className={`btn btn-primary my-1`}
+                onClick={handleSend}
+                disabled={isLoading || !inputText.trim()}
+              >
+                <ImSpinner9
+                  className={`mr-3 ${isLoading ? "animate-spin" : "hidden"}`}
+                ></ImSpinner9>
+                <IoIosSend className={`${isLoading ? "hidden" : ""}`} />
+                <span className={`${isLoading ? "hidden" : ""}`}>Send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-center text-sm mt-3 mb-1 text-gray-500">
+          <p>AI Generated Only</p>
+        </div>
+      </div>
     </div>
   );
 }
