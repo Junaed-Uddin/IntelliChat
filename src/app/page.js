@@ -72,7 +72,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen pt-20">
       <div className="px-5 flex flex-col min-h-[585px] justify-between pb-40">
         <div className="flex-1 overflow-y-auto">
           <div className="py-4 rounded-2xl w-full max-w-5xl mx-auto mb-4 space-y-4">

@@ -38,13 +38,8 @@ export default function HistoryPage() {
                   localStorage.setItem("current-chat", JSON.stringify(chat))
                 }
               >
-                {chat[0]?.content
-                  ? `ChatGPT - ${chat[0].content.slice(0, 50)}${
-                      chat[0].content.length > 50 ? "..." : ""
-                    }`
-                  : `Chat Session ${index + 1}`}
+                {chat[0]?.content || `Chat ${index + 1}`}
               </Link>
-
               <button
                 onClick={() => deleteChat(index)}
                 className="text-red-400 hover:text-red-300 ml-4"
