@@ -94,12 +94,13 @@ export default function Home() {
 
       <div className="fixed bottom-0 left-0 w-full px-5 bg-[#0A0A0A]">
         <p
-          className={`text-center text-2xl m-5 ${messages.length ? "hidden" : ""
+          className={`text-center text-2xl ${messages.length ? "hidden" : ""
             }`}
         >
-          Hi, echoGPT
+          Hi, IntelliChat
         </p>
-        <div className="flex relative justify-end items-center pt-6">
+        <div className={`flex relative justify-end items-center ${messages.length ? "pt-6" : "pt-4"
+          }`}>
           {/* Input Area */}
           <div className="grow justify-end h-full w-full max-w-5xl mx-auto border border-gray-700 rounded-xl bg-[#1E1E1E] text-white px-3 pt-3 shadow-md">
             <div className="p-3 rounded-lg bg-[#1E1E1E] border border-gray-700">
